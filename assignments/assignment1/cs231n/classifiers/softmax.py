@@ -32,19 +32,25 @@ def softmax_loss_naive(W, X, y, reg):
   #############################################################################
   scores = X.dot(W) #(N,C)
   for i in xrange(N):
-      c_loss = 0.0
+      scores[i] -= np.max(scores[i])
+      denom = 0.0
       num = np.exp(scores[i,y[i]])
       for j in xrange(C):
-        c_loss += np.exp(scores[i,j])/num
-      c_norm = -np.log(1.0/c_loss)
+        denom += np.exp(scores[i,j])
+      softmax_loss = num/denom
+      c_norm = -np.log(softmax_loss)
       #print 'num %f c_norm %f' %(num,c_norm,)
       loss += c_norm
-      dW[:,y[i]] += X[i,:].T*(1/c_loss)
+      for j in xrange(C):
+          dW[:,j] += (np.exp(scores[i,j])/denom- (j == y[i])) * X[i].T
   #############################################################################
   #                          END OF YOUR CODE                                 #
   #############################################################################
   loss /= N
+  loss += 0.5* reg * np.sum(W * W)
   dW /= N
+
+  dW += reg * W
 
   return loss, dW
 
