@@ -24,7 +24,8 @@ def affine_forward(x, w, b):
   # TODO: Implement the affine forward pass. Store the result in out. You     #
   # will need to reshape the input into rows.                                 #
   #############################################################################
-  pass
+  v_x = x.reshape(x.shape[0],-1)
+  out = np.dot(v_x,w) + b.reshape(1, -1)
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################
@@ -52,7 +53,11 @@ def affine_backward(dout, cache):
   #############################################################################
   # TODO: Implement the affine backward pass.                                 #
   #############################################################################
-  pass
+  in_x = x
+  v_x = x.reshape(x.shape[0],-1)
+  dw = np.dot(v_x.T, dout)
+  dx = np.dot(dout, w.T).reshape(in_x.shape)
+  db = np.sum(dout, axis=0)
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################
